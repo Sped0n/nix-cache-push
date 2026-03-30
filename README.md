@@ -1,17 +1,17 @@
-# `nix-cache-push`
+# nix-cache-push
 
-`nix-cache-push` builds or accepts Nix store paths, signs them recursively, and uploads them to an S3-compatible binary cache with `nix copy`.
+Signs and pushes Nix store paths to S3-compatible binary caches.
 
 ## Run
 
 ```bash
-nix run ./nix-cache-push -- --help
+nix run https://github.com/Sped0n/nix-cache-push -- --help
 ```
 
 ## Install
 
 ```bash
-nix profile install ./nix-cache-push
+nix profile install https://github.com/Sped0n/nix-cache-push
 ```
 
 ## Config
