@@ -105,6 +105,28 @@ require_config_key() {
 	fi
 }
 
+expand_config_path() {
+	local value="$1"
+	local original="$1"
+	local match var prefix suffix replacement
+
+	while [[ "$value" =~ (\$\{([A-Za-z_][A-Za-z0-9_]*)\}|\$([A-Za-z_][A-Za-z0-9_]*)) ]]; do
+		match="${BASH_REMATCH[1]}"
+		var="${BASH_REMATCH[2]:-${BASH_REMATCH[3]}}"
+
+		if [ -z "${!var+x}" ]; then
+			die "config path '$original' references unset environment variable '$var'"
+		fi
+
+		prefix="${value%%"$match"*}"
+		suffix="${value#*"$match"}"
+		replacement="${!var}"
+		value="${prefix}${replacement}${suffix}"
+	done
+
+	printf '%s\n' "$value"
+}
+
 config_show() {
 	print_config_path
 	ensure_valid_config_file
@@ -202,8 +224,8 @@ load_push_config() {
 	bucket="$(jq -r '.bucket' "$config_path")"
 	region="$(jq -r '.region' "$config_path")"
 	access_key_id="$(jq -r '.accessKeyId' "$config_path")"
-	signing_key_path="$(jq -r '.signingKeyPath' "$config_path")"
-	secret_key_path="$(jq -r '.secretKeyPath' "$config_path")"
+	signing_key_path="$(expand_config_path "$(jq -r '.signingKeyPath' "$config_path")")"
+	secret_key_path="$(expand_config_path "$(jq -r '.secretKeyPath' "$config_path")")"
 
 	if [ ! -r "$signing_key_path" ]; then
 		die "signing key file is not readable: $signing_key_path"
