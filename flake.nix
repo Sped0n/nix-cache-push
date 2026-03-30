@@ -1,7 +1,7 @@
 {
   description = "Sign and push Nix store paths to an S3-compatible binary cache";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  inputs.nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1";
 
   outputs =
     { self, nixpkgs }:
