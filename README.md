@@ -52,7 +52,7 @@ Expected config shape:
 }
 ```
 
-The config stores file paths to secrets, not the secret contents. `signingKeyPath` and `secretKeyPath` may include `$VAR` or `${VAR}` environment references, which are expanded at runtime.
+The config stores file paths to secrets, not the secret contents. `signingKeyPath` and `secretKeyPath` may include `$VAR`, `${VAR}`, or `$(...)` references, which are expanded at runtime.
 
 ## Usage
 

@@ -109,6 +109,19 @@ expand_config_path() {
 	local value="$1"
 	local original="$1"
 	local match var prefix suffix replacement
+	local command_match command_output
+
+	while [[ "$value" =~ \$\(([^()]*)\) ]]; do
+		command_match="${BASH_REMATCH[0]}"
+
+		if ! command_output="$(eval "${BASH_REMATCH[1]}")"; then
+			die "config path '$original' command substitution failed: ${BASH_REMATCH[1]}"
+		fi
+
+		prefix="${value%%"$command_match"*}"
+		suffix="${value#*"$command_match"}"
+		value="${prefix}${command_output}${suffix}"
+	done
 
 	while [[ "$value" =~ (\$\{([A-Za-z_][A-Za-z0-9_]*)\}|\$([A-Za-z_][A-Za-z0-9_]*)) ]]; do
 		match="${BASH_REMATCH[1]}"
